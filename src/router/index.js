@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-import Home from '@/components/HelloWorld'
+// import Home from '@/components/HelloWorld'
 import Login from '@/components/pages/login'
 import DashBoard from '@/components/DashBoard'
 import Product from '@/components/pages/Product'
@@ -20,12 +20,12 @@ export default new VueRouter({
       path: '*',
       redirect: '/login'
     },
-    {
-      name: 'index',
-      path: '/index',
-      component: Home,
-      meta: { requiresAuth: true }
-    },
+    // {
+    //   name: 'index',
+    //   path: '/index',
+    //   component: Home,
+    //   meta: { requiresAuth: true }
+    // },
     {
       name: 'Login',
       path: '/login',

@@ -1,10 +1,15 @@
 import Vue from 'vue'
-import App from './App.vue'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+import 'bootstrap'
+import $ from 'jquery'
+
+import App from './App.vue'
 import router from './router'
 
 axios.defaults.withCredentials = true
+
+window.$ = $
 
 Vue.config.productionTip = false
 Vue.use(VueAxios, axios)
