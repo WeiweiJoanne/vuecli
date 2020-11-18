@@ -1,6 +1,6 @@
 <template>
 <div>
-  <loading :active.sync="isLoading" ></loading>
+  <loading :active.sync="isLoading"></loading>
   <div>
     <button type="button" class="btn btn-primary" @click="openModal('add')">建立新產品</button>
   </div>
@@ -188,7 +188,10 @@ export default {
         vm.getProducts()
         $('#productModal').modal('hide')
         if (!res.data.success) {
+          this.$bus.$emit('message:push', 'from product', 'danger')
           console.log('error')
+        } else {
+          this.$bus.$emit('message:push', 'from product', 'success')
         }
       })
     },
@@ -210,9 +213,10 @@ export default {
         vm.status.fileUploading = false
         if (res.data.success) {
           // vm.tempProduct.imageUrl = res.data.imageUrl
-          console.log('success')
+          this.$bus.$emit('message:push', 'from product', 'success')
           vm.$set(vm.tempProduct, 'imageUrl', res.data.imageUrl)
         } else {
+          this.$bus.$emit('message:push', 'from product', 'danger')
           console.log('error')
         }
       })
@@ -220,6 +224,7 @@ export default {
   },
   created () {
     this.getProducts()
+    // this.$bus.$emit('message:push', 'from product', 'success')
   }
 }
 </script>
