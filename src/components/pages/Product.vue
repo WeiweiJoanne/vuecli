@@ -1,5 +1,6 @@
 <template>
 <div>
+  <loading :active.sync="isLoading" ></loading>
   <div>
     <button type="button" class="btn btn-primary" @click="openModal('add')">建立新產品</button>
   </div>
@@ -51,7 +52,8 @@
               </div>
               <div class="form-group">
                 <label for="customFile">或 上傳圖片
-                  <i class="fas fa-spinner fa-spin"></i>
+                  <!-- <i class="fas fa-spinner fa-spin"></i> -->
+                  <i class="fas fa-spinner fa-pulse" v-if="status.fileUploading"></i>
                 </label>
                 <input type="file" id="customFile" class="form-control" ref="files" @change="uploadFile">
               </div>
@@ -144,16 +146,22 @@ export default {
     return {
       product: [],
       tempProduct: {},
-      isNew: 'add'
+      isNew: 'add',
+      isLoading: false,
+      status: {
+        fileUploading: false
+      }
     }
   },
   methods: {
     getProducts () {
       const api = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/products/all`
       const vm = this
+      this.isLoading = true
       this.$http.get(api).then((res) => {
         // console.log(res)
         vm.product = res.data.products
+        this.isLoading = false
       })
     },
     openModal (isNew, item) {
@@ -186,19 +194,23 @@ export default {
     },
     uploadFile () {
       // console.log(this)
+      $('#customFile').val('')
       const uploadedFile = this.$refs.files.files[0]
       const fornData = new FormData()
       fornData.append('file-to-upload', uploadedFile)
       const api = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/upload`
       const vm = this
+      vm.status.fileUploading = true
       this.$http.post(api, fornData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       }).then((res) => {
         // console.log(res)
+        vm.status.fileUploading = false
         if (res.data.success) {
           // vm.tempProduct.imageUrl = res.data.imageUrl
+          console.log('success')
           vm.$set(vm.tempProduct, 'imageUrl', res.data.imageUrl)
         } else {
           console.log('error')

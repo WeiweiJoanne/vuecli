@@ -3,11 +3,15 @@ import axios from 'axios'
 import VueAxios from 'vue-axios'
 import 'bootstrap'
 import $ from 'jquery'
+import Loading from 'vue-loading-overlay'
+import 'vue-loading-overlay/dist/vue-loading.css'
 
 import App from './App.vue'
 import router from './router'
 
 axios.defaults.withCredentials = true
+
+Vue.component('Loading', Loading)
 
 window.$ = $
 
