@@ -1,7 +1,7 @@
 <template>
 <div>
   <div>
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#productModal">建立新產品</button>
+    <button type="button" class="btn btn-primary" @click="openModal('add')">建立新產品</button>
   </div>
   <table class="table mt-4">
     <thead>
@@ -26,7 +26,7 @@
           <span v-else>未啟用</span>
         </td>
         <td class="text-center">
-          <button type="button" class="btn btn-outline-secondary">編輯</button>
+          <button type="button" class="btn btn-outline-secondary" @click="openModal('edit',item)">編輯</button>
         </td>
       </tr>
     </tbody>
@@ -53,9 +53,9 @@
                 <label for="customFile">或 上傳圖片
                   <i class="fas fa-spinner fa-spin"></i>
                 </label>
-                <input type="file" id="customFile" class="form-control" ref="files">
+                <input type="file" id="customFile" class="form-control" ref="files" @change="uploadFile">
               </div>
-              <img img="https://images.unsplash.com/photo-1483985988355-763728e1935b?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=828346ed697837ce808cae68d3ddc3cf&auto=format&fit=crop&w=1350&q=80" class="img-fluid" alt="">
+              <img :src="tempProduct.imageUrl" class="img-fluid" alt="">
             </div>
             <div class="col-sm-8">
               <div class="form-group">
@@ -133,25 +133,6 @@
       </div>
     </div>
   </div>
-  <!-- <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          ...
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
-        </div>
-      </div>
-    </div>
-  </div> -->
 </div>
 </template>
 
@@ -162,40 +143,66 @@ export default {
   data () {
     return {
       product: [],
-      tempProduct: []
+      tempProduct: {},
+      isNew: 'add'
     }
   },
   methods: {
     getProducts () {
-      // const api = `${process.env.VUE_APP_API}/api/joanne/admin/products/all`
       const api = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/products/all`
       const vm = this
       this.$http.get(api).then((res) => {
-        console.log(res)
+        // console.log(res)
         vm.product = res.data.products
       })
-      // console.log(process.env.VUE_APP_CUSTOMPATH)
     },
-    openModal () {
+    openModal (isNew, item) {
+      if (isNew === 'edit') {
+        this.isNew = 'edit'
+        this.tempProduct = Object.assign({}, item)
+      } else {
+        this.isNew = 'add'
+        this.tempProduct = {}
+      }
       $('#productModal').modal('show')
     },
     updateProduct () {
-      const api = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/product`
+      let api = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/product`
+      let methods = 'post'
       const vm = this
-      // console.log(vm.tempProduct)
-      this.$http.post(api, {
+      if (vm.isNew === 'edit') {
+        api = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/product/${vm.tempProduct.id}`
+        methods = 'put'
+      }
+      this.$http[methods](api, {
         data: vm.tempProduct
       }).then((res) => {
-        $('#productModal').modal('show')
-        if (res.success) {
-          vm.getProducts()
-          $('#productModal').modal('hide')
-        } else {
-          vm.getProducts()
-          $('#productModal').modal('hide')
+        vm.getProducts()
+        $('#productModal').modal('hide')
+        if (!res.data.success) {
           console.log('error')
         }
-        // vm.product = res.data.products
+      })
+    },
+    uploadFile () {
+      // console.log(this)
+      const uploadedFile = this.$refs.files.files[0]
+      const fornData = new FormData()
+      fornData.append('file-to-upload', uploadedFile)
+      const api = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/upload`
+      const vm = this
+      this.$http.post(api, fornData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then((res) => {
+        // console.log(res)
+        if (res.data.success) {
+          // vm.tempProduct.imageUrl = res.data.imageUrl
+          vm.$set(vm.tempProduct, 'imageUrl', res.data.imageUrl)
+        } else {
+          console.log('error')
+        }
       })
     }
   },
