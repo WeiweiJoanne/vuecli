@@ -197,7 +197,8 @@ export default {
     },
     uploadFile () {
       // console.log(this)
-      $('#customFile').val('')
+      // $('#customFile').val('')
+      // document.getElementById('customFile').value = ''
       const uploadedFile = this.$refs.files.files[0]
       const fornData = new FormData()
       fornData.append('file-to-upload', uploadedFile)
@@ -215,9 +216,11 @@ export default {
           // vm.tempProduct.imageUrl = res.data.imageUrl
           this.$bus.$emit('message:push', 'from product', 'success')
           vm.$set(vm.tempProduct, 'imageUrl', res.data.imageUrl)
+          document.getElementById('customFile').value = ''
         } else {
           this.$bus.$emit('message:push', 'from product', 'danger')
           console.log('error')
+          document.getElementById('customFile').value = ''
         }
       })
     }

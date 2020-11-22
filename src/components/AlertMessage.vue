@@ -15,8 +15,8 @@ export default {
   data () {
     return {
       messages: [{
-        message: '',
-        status: '',
+        message: 'message',
+        status: 'danger',
         timestamp: null
       }]
     }
