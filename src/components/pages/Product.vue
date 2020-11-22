@@ -135,13 +135,18 @@
       </div>
     </div>
   </div>
+  <Pagination :paginationP="pagination" @getProductsP="getProducts"/>
 </div>
 </template>
 
 <script>
 // import $ from 'jquery'
 /* global $ */
+import Pagination from '../Pagination'
 export default {
+  components: {
+    Pagination
+  },
   data () {
     return {
       product: [],
@@ -150,17 +155,19 @@ export default {
       isLoading: false,
       status: {
         fileUploading: false
-      }
+      },
+      pagination: {}
     }
   },
   methods: {
-    getProducts () {
-      const api = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/products/all`
+    getProducts (page = 1) {
+      const api = `${process.env.VUE_APP_API}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/products?page=${page}`
       const vm = this
       this.isLoading = true
       this.$http.get(api).then((res) => {
-        // console.log(res)
+        console.log(res)
         vm.product = res.data.products
+        vm.pagination = res.data.pagination
         this.isLoading = false
       })
     },
@@ -196,9 +203,6 @@ export default {
       })
     },
     uploadFile () {
-      // console.log(this)
-      // $('#customFile').val('')
-      // document.getElementById('customFile').value = ''
       const uploadedFile = this.$refs.files.files[0]
       const fornData = new FormData()
       fornData.append('file-to-upload', uploadedFile)
