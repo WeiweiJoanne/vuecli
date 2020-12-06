@@ -5,6 +5,7 @@ import VueRouter from 'vue-router'
 import Login from '@/components/pages/login'
 import DashBoard from '@/components/DashBoard'
 import Product from '@/components/pages/Product'
+import CustomerOrder from '@/components/pages/CustomerOrder'
 // import Page from '@/components/pages/page'
 // import Menuu from '@/components/pages/menu'
 // import Child1 from '@/components/pages/child1'
@@ -41,6 +42,18 @@ export default new VueRouter({
           path: 'products',
           component: Product,
           meta: { requiresAuth: true }
+        }
+      ]
+    },
+    {
+      name: 'DashBoard',
+      path: '/',
+      component: DashBoard,
+      children: [
+        {
+          name: 'CustomerOrder',
+          path: 'CustomerOrder',
+          component: CustomerOrder
         }
       ]
     }

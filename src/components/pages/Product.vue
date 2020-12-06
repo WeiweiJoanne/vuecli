@@ -20,8 +20,8 @@
         <td style="">{{ item.category }}</td>
         <td style="">{{ item.title }}</td>
         <!-- <td><img :src="item.image" alt=""></td> -->
-        <td class="text-right">{{ item.origin_price }}</td>
-        <td class="text-right">{{ item.price }}</td>
+        <td class="text-right">{{ item.origin_price | filterCurrency }}</td>
+        <td class="text-right">{{ item.price | filterCurrency }}</td>
         <td class="text-right">
           <span v-if="item.is_enabled === 1 ">啟用</span>
           <span v-else>未啟用</span>
@@ -195,7 +195,7 @@ export default {
         vm.getProducts()
         $('#productModal').modal('hide')
         if (!res.data.success) {
-          this.$bus.$emit('message:push', 'from product', 'danger')
+          this.$bus.$emit('message:push', 'error', 'danger')
           console.log('error')
         } else {
           this.$bus.$emit('message:push', 'from product', 'success')
@@ -222,7 +222,7 @@ export default {
           vm.$set(vm.tempProduct, 'imageUrl', res.data.imageUrl)
           document.getElementById('customFile').value = ''
         } else {
-          this.$bus.$emit('message:push', 'from product', 'danger')
+          this.$bus.$emit('message:push', 'error', 'danger')
           console.log('error')
           document.getElementById('customFile').value = ''
         }

@@ -9,6 +9,7 @@ import 'vue-loading-overlay/dist/vue-loading.css'
 import App from './App.vue'
 import router from './router'
 import './bus'
+import filterCurrency from './filter'
 
 axios.defaults.withCredentials = true
 
@@ -18,6 +19,7 @@ window.$ = $
 
 Vue.config.productionTip = false
 Vue.use(VueAxios, axios)
+Vue.filter('filterCurrency', filterCurrency)
 
 new Vue({
   render: h => h(App),

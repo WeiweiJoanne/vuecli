@@ -14,11 +14,7 @@ export default {
   name: 'Alert',
   data () {
     return {
-      messages: [{
-        message: 'message',
-        status: 'danger',
-        timestamp: null
-      }]
+      messages: []
     }
   },
   // props: {
