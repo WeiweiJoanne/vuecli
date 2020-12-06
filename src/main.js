@@ -5,6 +5,9 @@ import 'bootstrap'
 import $ from 'jquery'
 import Loading from 'vue-loading-overlay'
 import 'vue-loading-overlay/dist/vue-loading.css'
+import VeeValidate from 'vee-validate'
+import zhTW from 'vee-validate/dist/locale/zh_TW'
+import VueI18n from 'vue-i18n'
 
 import App from './App.vue'
 import router from './router'
@@ -21,9 +24,22 @@ Vue.config.productionTip = false
 Vue.use(VueAxios, axios)
 Vue.filter('filterCurrency', filterCurrency)
 
+Vue.use(VueI18n)
+
+const i18n = new VueI18n({
+  locale: 'zhTW'
+})
+Vue.use(VeeValidate, {
+  i18n,
+  dictionary: {
+    zhTW
+  }
+})
+
 new Vue({
   render: h => h(App),
-  router
+  router,
+  i18n
 }).$mount('#app')
 
 router.beforeEach((to, from, next) => {
